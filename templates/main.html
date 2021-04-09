@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/toastr.css') }}" type="text/css"></link>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}" type="text/css">
+    <title>{% block title %}{% endblock %}</title>
+</head>
+<body>
+    <div class="page-loading" style="display: none">
+        <img src="{{ url_for('static', filename='/images/loading.svg') }}" alt=""/>
+    </div>
+    <header>
+        <!-----------------main nav----------------->
+        <nav class="navbar navbar-expand-sm bg-primary navbar-dark justify-content-center">
+            <ul class="navbar-nav">
+                <li class="nav-item active" id="item-table-0" data-number="0">
+                    <a class="nav-link">Student</a>
+                </li>
+                <li class="nav-item" id="item-table-1" data-number="1">
+                    <a class="nav-link">Client</a>
+                </li>
+                <li class="nav-item" id="item-table-2" data-number="2">
+                    <a class="nav-link">Vaccine Manufacturer</a>
+                </li>
+                <li class="nav-item" id="item-table-3" data-number="3">
+                    <a class="nav-link">Provider</a>
+                </li>
+                <li class="nav-item" id="item-table-4" data-number="4">
+                    <a class="nav-link">Activity</a>
+                </li>
+                <li class="nav-item" id="item-table-5" data-number="5">
+                    <a class="nav-link">Insurance</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <div class="container-lg my-5">
+        <div class="carousel slide" data-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    {% include 'student_form.html' %}
+                </div>
+                <div class="carousel-item">
+                    {% include 'client_form.html' %}
+                </div>
+                <div class="carousel-item">
+                    {% include 'vaccine_manufacturer_form.html' %}
+                </div>
+                <div class="carousel-item">
+                    {% include 'provider_form.html' %}
+                </div>
+                <div class="carousel-item">
+                    {% include 'activity_form.html' %}
+                </div>
+                <div class="carousel-item">
+                    {% include 'insurance_form.html' %}
+                </div>
+            </div>
+        </div>
+        <div class="row my-3">
+            <div class="col-6">
+                <button class="btn btn-outline-danger" id="btn_prev_form" style="width: 150px">Previous</button>
+            </div>
+            <div class="col-6">
+                <button class="btn btn-outline-info float-right" id="btn_next_form" style="width: 150px">Next</button>
+            </div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/toastr.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/common.js') }}"></script>
+    {% block scripts %}
+    {% endblock %}
+</body>
+
+</html>

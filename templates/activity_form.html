@@ -1,0 +1,51 @@
+<form onsubmit="onValidate(event)" id="activity_form">
+    <div class="row">
+        <div class="col-12 text-center">
+            <h1 style="color: dodgerblue">Activity Table</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="form-group">
+                <label for="previous_exposure">Previous Exposure</label>
+                <select type="text" class="form-control" name="previous_exposure" id="previous_exposure" required>
+                    <option value="1">Yes</option>
+                    <option value="0" selected>No</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="form-group">
+                <label for="last_travel">Last Travel</label>
+                <input type="date" class="form-control" id="last_travel" name="last_travel" required>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="form-group">
+                <label for="notes">Notes</label>
+                <input type="text" class="form-control" name="notes" id="notes" required>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="form-group">
+                <label for="antibody">Antibody</label>
+                <select type="text" class="form-control" name="antibody" id="antibody" required>
+                    <option value="1">Yes</option>
+                    <option value="0" selected>No</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="form-group">
+                <label for="strain">Strain</label>
+                <input type="text" class="form-control" name="strain" id="strain">
+            </div>
+        </div>
+    </div>
+    <div class="row my-2">
+        <div class="col-12 text-center">
+            <button class="btn btn-info" type="submit" style="width: 100px">Save</button>
+            <button class="btn btn-danger" type="button" style="width: 100px" onclick="onClear('activity_form')">Clear</button>
+        </div>
+    </div>
+</form>
