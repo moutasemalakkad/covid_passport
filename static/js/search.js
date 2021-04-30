@@ -1,5 +1,3 @@
-console.log("I'm runningg!")
-
 function onSearch(e) {
     e.preventDefault();
     let form = e.currentTarget;

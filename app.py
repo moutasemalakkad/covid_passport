@@ -123,6 +123,7 @@ def search(tablename):
 
     cursor = mysql.connection.cursor()
     cursor.execute(sql)
+    print(cursor.fetchall())
     cursor.close()
 
     data = {'success': True}
