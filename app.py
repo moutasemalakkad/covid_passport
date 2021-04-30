@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = ''
+app.config['MYSQL_PASSWORD'] = 'nbnjdf'
 app.config['MYSQL_DB'] = 'flask_db'
 
 mysql = MySQL(app)
@@ -31,6 +31,24 @@ def generageSqlQuery(tablename, formdata):
             sqlValues += ","
     sql = "INSERT INTO `" + tablename + "` (" + sqlKeys + ") VALUES (" + sqlValues + ")"
     return sql
+
+def getColumns(tablename):
+    cursor = mysql.connection.cursor()
+    sql = "SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '" + tablename + "'"
+    cursor.execute(sql)
+
+    cols = cursor.fetchall()
+    ret = []
+    for col in cols:
+        dic = {}
+        dic["name"] = col[3]
+        dic["type"] = col[7]
+        dic["max"] = col[8]
+        ret.append(dic)
+
+    cursor.close()
+    return ret
+
 
 @app.route("/create-tables")
 def createTableIfNotExists():
@@ -56,6 +74,14 @@ def createTableIfNotExists():
 
     data = {'success': True}
     return jsonify(data), 200
+
+@app.route('/getFields/', methods=['GET'])
+def getFields():
+    if request.method == 'GET':
+
+    cols = getColumns(request.args["search-type"])
+    return jsonify(cols), 200
+
 
 @app.route('/')
 def homepage():

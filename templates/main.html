@@ -10,6 +10,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/toastr.css') }}" type="text/css"></link>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}" type="text/css">
+    <script src="{{url_for('static', filename='js/search.js')}}"> </script>
     <title>{% block title %}{% endblock %}</title>
 </head>
 <body>
@@ -38,6 +39,9 @@
                 <li class="nav-item" id="item-table-5" data-number="5">
                     <a class="nav-link">Insurance</a>
                 </li>
+                <li class="nav-item" id="item-table-6" data-number="6">
+                    <a class="nav-link">Search</a>
+                </li>
             </ul>
         </nav>
     </header>
@@ -61,6 +65,9 @@
                 </div>
                 <div class="carousel-item">
                     {% include 'insurance_form.html' %}
+                </div>
+                <div class="carousel-item">
+                    {% include 'search.html' %}
                 </div>
             </div>
         </div>
