@@ -32,6 +32,23 @@ def generageSqlQuery(tablename, formdata):
     sql = "INSERT INTO `" + tablename + "` (" + sqlKeys + ") VALUES (" + sqlValues + ")"
     return sql
 
+def generateSearchQuery(tablename, formdata):
+
+    sql = "SELECT * from " + tablename
+    if (len(formdata) == 0):
+        return sql + ";"
+    else: 
+        keys = list(formdata.keys())
+        for i in range(len(keys)):
+            if i == 0:
+                sql += " WHERE " + keys[i] 
+                sql += " = '" + str(formdata[keys[i]]) + "'"
+            else:
+                sql += " AND " + keys[i] + " = '" + formdata[keys[i]] + "'"
+    sql += ";"
+    return sql
+
+
 def getColumns(tablename):
     cursor = mysql.connection.cursor()
     sql = "SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '" + tablename + "'"
@@ -78,9 +95,8 @@ def createTableIfNotExists():
 @app.route('/getFields/', methods=['GET'])
 def getFields():
     if request.method == 'GET':
-
-    cols = getColumns(request.args["search-type"])
-    return jsonify(cols), 200
+        cols = getColumns(request.args["search-type"])
+        return jsonify(cols), 200
 
 
 @app.route('/')
@@ -95,6 +111,18 @@ def addActivity(tablename):
     cursor = mysql.connection.cursor()
     cursor.execute(sql)
     mysql.connection.commit()
+    cursor.close()
+
+    data = {'success': True}
+    return jsonify(data), 200
+
+@app.route('/search/<tablename>', methods=["GET"])
+def search(tablename):
+    form_data = request.args.to_dict()
+    sql = generateSearchQuery(tablename, form_data)
+
+    cursor = mysql.connection.cursor()
+    cursor.execute(sql)
     cursor.close()
 
     data = {'success': True}

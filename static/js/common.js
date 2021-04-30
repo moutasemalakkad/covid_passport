@@ -106,6 +106,6 @@ function onValidate(e) {
     } else if (id === 'student_form') {
         tablename = "student";
     }
-
     sendRequest(tablename, formData, id);
 }
+

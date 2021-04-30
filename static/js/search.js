@@ -1,21 +1,55 @@
 console.log("I'm runningg!")
+
+function onSearch(e) {
+    e.preventDefault();
+    let form = e.currentTarget;
+    let id = $(form).attr('id');
+    const tablename = $("#search-type :selected").val();
+    let formData = $(form).serializeArray();
+    
+    sendSearchRequest(tablename, formData, id);
+}
+
+function sendSearchRequest(tablename, formData, id) {
+    $('.page-loading').fadeIn(1000);
+
+    var req = []
+
+    for (var i=1; i < formData.length; i++) {
+        if (formData[i].value != "") {
+            req.push(formData[i])
+        }
+    }
+
+    $.ajax("/search/" + tablename, {
+        type: 'GET',
+        data: req,
+        success: function (data, status) {
+            
+            onClear(id);
+        },
+        error: function (errorMessage) {
+            toastr.error("failed to insert.");
+        },
+        complete: function () {
+            $('.page-loading').fadeOut(1000);
+        }
+    });
+}
+
+
 $(document).ready(function () {
     $("#search-type").on('change', function(){
         const selectedType = $("#search-type :selected").val();
-        console.log(selectedType)
-        console.log("making ajax call")
         $.ajax({
             url: 'http://localhost:5000/getFields',
             data: {"search-type": selectedType},
             type: 'GET',
             success: function(response){
-                console.log("success")
-                console.log(response);
                 addQueryFields(response)
 
             },
             error: function(error){
-                console.log("oh no")
                 console.log(error);
             }
         });
@@ -30,7 +64,6 @@ $(document).ready(function () {
 
         console.log(searchDiv.childNodes.length)
         while (searchDiv.childNodes.length > 0) {
-            console.log("removing")
             searchDiv.removeChild(searchDiv.lastChild);
           }
         const br = document.createElement("br");
@@ -41,11 +74,8 @@ $(document).ready(function () {
 
         for (var i=0; i< colsData.length; i++) {
             col = colsData[i]
-            console.log("col")
-            console.log(col)
             switch (col["type"]) {
                 case "varchar":
-                    console.log("case 1")
                     newElement = document.createElement("input");
                     newElement.setAttribute("type", "text");
                     //newElement.setAttribute("placeholder", col["name"])
@@ -53,14 +83,12 @@ $(document).ready(function () {
 
                     break;
                 case "int":
-                    console.log("case 2")
                     newElement = document.createElement("input");
                     newElement.setAttribute("type", "number");
                     //newElement.setAttribute("placeholder", col["name"])
 
                     break;
                 case "date":
-                    console.log("case 3")
                     newElement = document.createElement("input");
                     newElement.setAttribute("type", "date");
                     //newElement.setAttribute("placeholder", col["name"])
@@ -68,6 +96,7 @@ $(document).ready(function () {
                     break;
             }
             newElement.className = "form-control"
+            newElement.name = col["name"]
 
             var colDiv = document.createElement("div")
             colDiv.className = "col-lg-6"

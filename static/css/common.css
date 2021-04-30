@@ -3,7 +3,7 @@
         display: none;
     }
     form {
-        height: 500px;
+        height: 700px;
         overflow-y: auto;
         -ms-overflow-style: none;  /* IE and Edge */
         scrollbar-width: none;  /* Firefox */
