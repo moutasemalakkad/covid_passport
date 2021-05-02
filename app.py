@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'nbnjdf'
+app.config['MYSQL_PASSWORD'] = ''
 app.config['MYSQL_DB'] = 'flask_db'
 
 mysql = MySQL(app)
@@ -63,8 +63,7 @@ def getColumns(tablename):
     cols = cursor.fetchall()
     cols = sorted(cols, key=getKey)
     ret = []
-    print("fetched cols: ")
-    print(cols)
+
     for col in cols:
         dic = {}
         dic["name"] = col[3]
@@ -83,7 +82,6 @@ def getClients():
     clients = cursor.fetchall()
     cursor.close()
 
-    print("clients: ", clients)
     return clients
 
 
@@ -101,9 +99,8 @@ def createTableIfNotExists():
 
 
         cursor = mysql.connection.cursor()
-
-        cursor.execute(sqlStudentTable)
         cursor.execute(sqlClientTable)
+        cursor.execute(sqlStudentTable)
         cursor.execute(sqlManufacTable)
         cursor.execute(sqlProviderTable)
         cursor.execute(sqlActivityTable)
@@ -118,7 +115,6 @@ def createTableIfNotExists():
         tablesCreated = True
         return jsonify(data), 200
     else:
-        print("in else")
         data = {'success': True}
         return jsonify(data), 200
 
@@ -130,14 +126,13 @@ def getFields():
             cols = getColumns(request.args["search-type"])
             columnDict[request.args["search-type"]] = cols
         else:
-            print("getting cols from local cache")
             cols = columnDict[request.args["search-type"]]
         return jsonify(cols), 200
 
 
 @app.route('/')
 def homepage():
-    return redirect(url_for('addStudent'))
+    return render_template("main.html", page="home")
 
 @app.route('/addStudent')
 def addStudent():
@@ -187,10 +182,6 @@ def addData(tablename):
     data = {'success': True}
     return jsonify(data), 200
 
-@app.route('/searchResults')
-def searchResults():
-    print("made it to SR")
-    print(request.args)
 
 @app.route('/search/<tablename>', methods=["GET"])
 def search(tablename):
@@ -203,7 +194,6 @@ def search(tablename):
     data = cursor.fetchall()
 
     cursor.close()
-    print("returning ")
     cols = []
     if len(data) > 0:
         cols = getColumns(tablename)

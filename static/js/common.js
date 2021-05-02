@@ -63,13 +63,12 @@ $(document).ready(function () {
 
 
     function createTables() {
-
         //$('.page-loading').fadeIn(1000);
         $.get("/create-tables", function (data) {
             //$('.page-loading').fadeOut(1000);
         });
     }
-
+    
     createTables();
 });
 
