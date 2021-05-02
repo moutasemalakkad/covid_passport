@@ -27,15 +27,22 @@ $(document).ready(function () {
         $('#item-table-' + curIndex).addClass("active");
     });
 
+    setNavActive();
+    function setNavActive() {
+        var pageType = $('#my-data').data().name;
+        $('#' + pageType ).addClass("active");
+    }
+
+
     $('#btn_prev_form').click(() => {
         let curIndex = $('.nav-item.active').data('number');
 
         curIndex--;
         if (curIndex < 0) {
-            curIndex = 5;
+            curIndex = 7;
         }
 
-        if (curIndex === 5) {
+        if (curIndex === 7) {
             $('.carousel').carousel("prev");
         } else {
             $('.carousel').carousel(curIndex);
@@ -57,9 +64,9 @@ $(document).ready(function () {
 
     function createTables() {
 
-        $('.page-loading').fadeIn(1000);
+        //$('.page-loading').fadeIn(1000);
         $.get("/create-tables", function (data) {
-            $('.page-loading').fadeOut(1000);
+            //$('.page-loading').fadeOut(1000);
         });
     }
 
@@ -87,6 +94,8 @@ function sendRequest(tablename, request, id) {
         }
     });
 }
+
+
 function onValidate(e) {
     e.preventDefault();
     let form = e.currentTarget;

@@ -23,7 +23,7 @@ function sendSearchRequest(tablename, formData, id) {
         type: 'GET',
         data: req,
         success: function (data, status) {
-            
+            showData(data)
             onClear(id);
         },
         error: function (errorMessage) {
@@ -35,6 +35,70 @@ function sendSearchRequest(tablename, formData, id) {
     });
 }
 
+function showData(data) {
+    var searchContainer = $('#searchContainer')[0];
+   
+    while (searchContainer.firstChild){
+        searchContainer.removeChild(searchContainer.firstChild);
+    }
+
+    var rowDiv = document.createElement("div");
+        rowDiv.className = "row";
+        var colDiv1 = document.createElement("div");
+        colDiv1.className = "col-sm"
+        var colDiv2 = document.createElement("div");
+        colDiv2.className = "col-sm"
+        var colDiv3 = document.createElement("div");
+        colDiv3.className = "col-sm"
+        var emptyMsg = document.createElement("div");
+
+        var searchButton = document.createElement("button");
+        searchButton.className = "btn btn-outline-primary";
+        searchButton.innerText = "Search again";
+        searchButton.addEventListener("click", function() {window.location.href = "/showSearch"} );
+
+    if (data.data.length == 0) {
+        emptyMsg.innerHTML = "Sorry, no results were found. ";
+        colDiv2.appendChild(emptyMsg);
+    }
+
+    else {
+        var dataTable = makeDataTable(data.data, data.cols);
+        colDiv2.appendChild(dataTable);
+    }
+
+    colDiv2.appendChild(searchButton);
+    rowDiv.appendChild(colDiv1);
+    rowDiv.appendChild(colDiv2);
+    rowDiv.appendChild(colDiv3);
+    searchContainer.appendChild(rowDiv);
+}
+
+function makeDataTable(data, cols) {
+    var table = document.createElement("table");
+    let thead = table.createTHead();
+    thead.className = "thead-dark";
+    let row = thead.insertRow();
+    for (let col of cols) {
+        let th = document.createElement("th");
+        let text = document.createTextNode(col.name);
+        th.appendChild(text);
+        row.appendChild(th);
+      }
+
+    
+      for (let item of data) {
+        let row = table.insertRow();
+        for (var i=0; i < item.length; i++) {
+          let cell = row.insertCell();
+          let text = document.createTextNode(item[i]);
+          cell.appendChild(text);
+        }
+      }
+    
+    return table;
+
+}
 
 $(document).ready(function () {
     $("#search-type").on('change', function(){
@@ -59,8 +123,6 @@ $(document).ready(function () {
 
 
         var searchDiv = document.getElementById("query-fields");
-
-        console.log(searchDiv.childNodes.length)
         while (searchDiv.childNodes.length > 0) {
             searchDiv.removeChild(searchDiv.lastChild);
           }
