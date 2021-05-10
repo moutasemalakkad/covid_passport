@@ -7,28 +7,37 @@
     <div class="row">
         <div class="col-lg-6">
             <div class="form-group">
-                <label for="health_insurance_provider">Health insurance provider</label>
-                <input type="text" class="form-control" id="health_insurance_provider" name="health_insurance_provider" required>
+                <label for="search">Student</label>
+                <select class="form-control" id="search-type" name="student_id" required>
+                <option value="" selected dis abled >-- Choose One --</option>
+                {% for  student in students %}
+                <option value="{{student[0]}}">{{student[2] + ' ' + student[3]}}</option>
+                {% endfor %}
+                </select>
             </div>
         </div>
         <div class="col-lg-6">
             <div class="form-group">
-                <label for="health_insurance_group">Health insurance group</label>
-                <input type="text" class="form-control" id="health_insurance_group" name="health_insurance_group" required>
+                <label for="search">Vaccine Manufacturer</label>
+                <select class="form-control" id="search-type" name="vaccine_manufacturer_id" required>
+                <option value="" selected dis abled >-- Choose One --</option>
+                {% for  vaccine_manufacturer in vaccine_manufacturers %}
+                <option value="{{vaccine_manufacturer[0]}}">{{vaccine_manufacturer[1]}}</option>
+                {% endfor %}
+                </select>
             </div>
         </div>
         <div class="col-lg-6">
             <div class="form-group">
-                <label for="health_insurance_phone_number">Health insurance phone number</label>
-                <input type="text" class="form-control" name="health_insurance_phone_number" id="health_insurance_phone_number" onkeydown="return ( event.ctrlKey || event.altKey
-                    || (47<event.keyCode && event.keyCode<58 && event.shiftKey==false)
-                    || (95<event.keyCode && event.keyCode<106)
-                    || (event.keyCode==8) || (event.keyCode==9)
-                    || (event.keyCode>34 && event.keyCode<40)
-                    || (event.keyCode==46) )" required>
+                <label for="search">Vaccine Provider</label>
+                <select class="form-control" id="search-type" name="vaccine_provider_id" required>
+                <option value="" selected dis abled >-- Choose One --</option>
+                {% for  provider in providers %}
+                <option value="{{provider[0]}}">{{provider[1] + ' - ' + provider[2]}}</option>
+                {% endfor %}
+                </select>
             </div>
         </div>
-    </div>
     <div class="row my-2">
         <div class="col-12 text-center">
             <button class="btn btn-info" type="submit" style="width: 100px">Save</button>

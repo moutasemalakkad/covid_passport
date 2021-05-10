@@ -113,6 +113,8 @@ function onValidate(e) {
         tablename = "vaccine_manufacturer";
     } else if (id === 'student_form') {
         tablename = "student";
+    }  else if (id === 'vaccination_form') {
+        tablename = "vaccination";
     }
     sendRequest(tablename, formData, id);
 }

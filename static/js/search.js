@@ -160,7 +160,8 @@ $(document).ready(function () {
 
             var colDiv = document.createElement("div")
             colDiv.className = "col-lg-6"
-            colDiv.innerHTML += col["name"]
+            var name  = col["name"].replace("_", " ")
+            colDiv.innerHTML += capitalizeFirstLetter(name)
             colDiv.appendChild(newElement)
 
             searchDiv.appendChild(colDiv);
@@ -170,5 +171,10 @@ $(document).ready(function () {
         }
        
     }
+
+    function capitalizeFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+      }
+
 });
 

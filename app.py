@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = ''
+app.config['MYSQL_PASSWORD'] = 'nbnjdf'
 app.config['MYSQL_DB'] = 'flask_db'
 
 mysql = MySQL(app)
@@ -62,6 +62,8 @@ def getColumns(tablename):
 
     cols = cursor.fetchall()
     cols = sorted(cols, key=getKey)
+    print("sorted cols: ")
+    print(cols)
     ret = []
 
     for col in cols:
@@ -69,14 +71,15 @@ def getColumns(tablename):
         dic["name"] = col[3]
         dic["type"] = col[7]
         dic["max"] = col[8]
-        ret.append(dic)
+        if dic["name"] != "sid" and dic["name"] != "cell":
+            ret.append(dic)
 
     cursor.close()
     return ret
 
-def getClients():
+def getAll(fieldname):
     cursor = mysql.connection.cursor()
-    sql = "SELECT * FROM client"
+    sql = "SELECT * FROM " + fieldname
     cursor.execute(sql)
 
     clients = cursor.fetchall()
@@ -89,22 +92,22 @@ def getClients():
 def createTableIfNotExists():
     global tablesCreated
     if not tablesCreated:
-        sqlStudentTable = "CREATE TABLE IF NOT EXISTS `student` ( `student_id` int(11) NOT NULL AUTO_INCREMENT, `client_id` int, FOREIGN KEY (`client_id`) REFERENCES client(`client_id`), `student_first_name` varchar(64) NOT NULL, `student_last_name` varchar(64) NOT NULL, `date_of_birth` date DEFAULT NULL, `primary_poc` varchar(64) DEFAULT NULL, `phone_number` varchar(64) DEFAULT NULL, `email` varchar(64) NOT NULL, `address` varchar(255) NOT NULL, PRIMARY KEY(`student_id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
         sqlClientTable = "CREATE TABLE IF NOT EXISTS `client` (`client_id` int(11) NOT NULL AUTO_INCREMENT, `client_address` varchar(255) DEFAULT NULL, `client_type` varchar(255) DEFAULT NULL, `client_name` varchar(255) DEFAULT NULL, PRIMARY KEY(`client_id`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
+        sqlInsuranceTable = "CREATE TABLE IF NOT EXISTS `insurance` (`health_insurance_id` int(11) NOT NULL AUTO_INCREMENT, `health_insurance_provider` varchar(255) NOT NULL, `health_insurance_group` varchar(255) NOT NULL, `health_insurance_phone_number` varchar(255) NOT NULL, PRIMARY KEY(`health_insurance_id`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
+        sqlStudentTable = "CREATE TABLE IF NOT EXISTS `student` ( `student_id` int(11) NOT NULL AUTO_INCREMENT, `client_id` int, FOREIGN KEY (`client_id`) REFERENCES client(`client_id`), `student_first_name` varchar(64) NOT NULL, `student_last_name` varchar(64) NOT NULL, `date_of_birth` date DEFAULT NULL, `primary_poc` varchar(64) DEFAULT NULL, `health_insurance_id` int, FOREIGN KEY (`health_insurance_id`) REFERENCES insurance(`health_insurance_id`), `phone_number` varchar(64) DEFAULT NULL, `email` varchar(64) NOT NULL, `address` varchar(255) NOT NULL, PRIMARY KEY(`student_id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
         sqlManufacTable = "CREATE TABLE IF NOT EXISTS `vaccine_manufacturer` (`vaccine_manufacturer_id` int(11) NOT NULL AUTO_INCREMENT, `vaccine_manufacturer_name` varchar(255) NOT NULL, `vaccine_manufacturer_address` varchar(255) NOT NULL, `vaccine_manufacturer_phone_number` varchar(64) NOT NULL, `vaccine_manufacturer_email` varchar(255) NOT NULL, `vaccine_type` varchar(255) NOT NULL, PRIMARY KEY(`vaccine_manufacturer_id`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
         sqlProviderTable = "CREATE TABLE IF NOT EXISTS `provider` ( `vaccine_provider_id` int(11) NOT NULL AUTO_INCREMENT, `vaccine_provider_name` varchar(255) NOT NULL, `vaccine_provider_address` varchar(255) DEFAULT NULL, `vaccine_provider_phone_number` varchar(255) NOT NULL, PRIMARY KEY(`vaccine_provider_id`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
         sqlActivityTable = "CREATE TABLE IF NOT EXISTS `activity` (`id` int(11) NOT NULL AUTO_INCREMENT, `previous_exposure` tinyint(1) NOT NULL, `last_travel` date DEFAULT NULL, `notes` varchar(255) NOT NULL, `antibody` tinyint(1) NOT NULL, `strain` varchar(255) DEFAULT NULL, PRIMARY KEY(`id`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
-        sqlInsuranceTable = "CREATE TABLE IF NOT EXISTS `insurance` (`health_insurance_id` int(11) NOT NULL AUTO_INCREMENT, `health_insurance_provider` varchar(255) NOT NULL, `health_insurance_group` varchar(255) NOT NULL, `health_insurance_phone_number` varchar(255) NOT NULL, PRIMARY KEY(`health_insurance_id`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
         sqlVaccinationTable = "CREATE TABLE IF NOT EXISTS `vaccination` (`vaccination_id` int(11) NOT NULL AUTO_INCREMENT, PRIMARY KEY (`vaccination_id`),`vaccine_manufacturer_id` int, FOREIGN KEY (`vaccine_manufacturer_id`) REFERENCES vaccine_manufacturer(`vaccine_manufacturer_id`), `student_id` int, FOREIGN KEY (`student_id`) REFERENCES student(`student_id`), `vaccine_provider_id` int, FOREIGN KEY (`vaccine_provider_id`) REFERENCES provider(`vaccine_provider_id`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
 
 
         cursor = mysql.connection.cursor()
         cursor.execute(sqlClientTable)
+        cursor.execute(sqlInsuranceTable)
         cursor.execute(sqlStudentTable)
         cursor.execute(sqlManufacTable)
         cursor.execute(sqlProviderTable)
         cursor.execute(sqlActivityTable)
-        cursor.execute(sqlInsuranceTable)
         cursor.execute(sqlVaccinationTable)
 
         mysql.connection.commit()
@@ -136,8 +139,9 @@ def homepage():
 
 @app.route('/addStudent')
 def addStudent():
-    clients = getClients()
-    return render_template("main.html", clients = clients, page="student_form")
+    clients = getAll('client')
+    insurances = getAll('insurance')
+    return render_template("main.html", insurances=insurances, clients = clients, page="student_form")
 
 @app.route('/addClient')
 def addClient():
@@ -161,7 +165,11 @@ def addInsurance():
 
 @app.route('/addVaccination')
 def addVaccination():
-    return render_template("main.html",  page="vaccination_form")
+    students = getAll('student')
+    vaccine_manufacturers = getAll('vaccine_manufacturer')
+    providers = getAll('provider')
+    print(providers)
+    return render_template("main.html", students = students, vaccine_manufacturers=vaccine_manufacturers, providers=providers, page="vaccination_form")
 
 @app.route('/showSearch')
 def showSearch():
@@ -173,7 +181,7 @@ def showSearch():
 def addData(tablename):
     form_data = request.form
     sql = generageSqlQuery(tablename, form_data)
-
+    print(sql)
     cursor = mysql.connection.cursor()
     cursor.execute(sql)
     mysql.connection.commit()
