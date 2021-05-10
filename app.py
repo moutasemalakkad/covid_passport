@@ -135,7 +135,7 @@ def getFields():
 
 @app.route('/')
 def homepage():
-    return render_template("main.html", page="home")
+    return redirect(url_for('addStudent'))
 
 @app.route('/addStudent')
 def addStudent():
