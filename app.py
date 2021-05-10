@@ -26,7 +26,10 @@ def generageSqlQuery(tablename, formdata):
         key = item
         value = formdata[key]
         sqlKeys += "`" + key + "`"
-        sqlValues += "'" + value + "'"
+        if value == '':
+            sqlValues += "NULL"
+        else:
+            sqlValues += "'" + value + "'"
 
         if index < len(formdata):
             sqlKeys += ","
@@ -98,7 +101,7 @@ def createTableIfNotExists():
         sqlManufacTable = "CREATE TABLE IF NOT EXISTS `vaccine_manufacturer` (`vaccine_manufacturer_id` int(11) NOT NULL AUTO_INCREMENT, `vaccine_manufacturer_name` varchar(255) NOT NULL, `vaccine_manufacturer_address` varchar(255) NOT NULL, `vaccine_manufacturer_phone_number` varchar(64) NOT NULL, `vaccine_manufacturer_email` varchar(255) NOT NULL, `vaccine_type` varchar(255) NOT NULL, PRIMARY KEY(`vaccine_manufacturer_id`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
         sqlProviderTable = "CREATE TABLE IF NOT EXISTS `provider` ( `vaccine_provider_id` int(11) NOT NULL AUTO_INCREMENT, `vaccine_provider_name` varchar(255) NOT NULL, `vaccine_provider_address` varchar(255) DEFAULT NULL, `vaccine_provider_phone_number` varchar(255) NOT NULL, PRIMARY KEY(`vaccine_provider_id`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
         sqlActivityTable = "CREATE TABLE IF NOT EXISTS `activity` (`id` int(11) NOT NULL AUTO_INCREMENT, `previous_exposure` tinyint(1) NOT NULL, `last_travel` date DEFAULT NULL, `notes` varchar(255) NOT NULL, `antibody` tinyint(1) NOT NULL, `strain` varchar(255) DEFAULT NULL, PRIMARY KEY(`id`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
-        sqlVaccinationTable = "CREATE TABLE IF NOT EXISTS `vaccination` (`vaccination_id` int(11) NOT NULL AUTO_INCREMENT, PRIMARY KEY (`vaccination_id`),`vaccine_manufacturer_id` int, FOREIGN KEY (`vaccine_manufacturer_id`) REFERENCES vaccine_manufacturer(`vaccine_manufacturer_id`), `student_id` int, FOREIGN KEY (`student_id`) REFERENCES student(`student_id`), `vaccine_provider_id` int, FOREIGN KEY (`vaccine_provider_id`) REFERENCES provider(`vaccine_provider_id`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
+        sqlVaccinationTable = "CREATE TABLE IF NOT EXISTS `vaccination` (`vaccination_id` int(11) NOT NULL AUTO_INCREMENT, PRIMARY KEY (`vaccination_id`),`vaccine_manufacturer_id` int, FOREIGN KEY (`vaccine_manufacturer_id`) REFERENCES vaccine_manufacturer(`vaccine_manufacturer_id`), `student_id` int, FOREIGN KEY (`student_id`) REFERENCES student(`student_id`), `vaccine_provider_id` int, FOREIGN KEY (`vaccine_provider_id`) REFERENCES provider(`vaccine_provider_id`), `date_of_first_dose` date DEFAULT NULL, `date_of_second_dose` date DEFAULT NULL ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
 
 
         cursor = mysql.connection.cursor()
@@ -135,7 +138,8 @@ def getFields():
 
 @app.route('/')
 def homepage():
-    return redirect(url_for('addStudent'))
+    createTableIfNotExists()
+    return render_template("main.html", page="home")
 
 @app.route('/addStudent')
 def addStudent():
