@@ -11,7 +11,7 @@
                             <select class="form-control" id="search-type" name="client_id" required>
                             <option value="" selected dis abled >-- Choose One --</option>
                             {% for  client in clients %}
-                            <option value="{{client[0]}}">{{client[3]}}</option>
+                            <option value="{{client[0]}}">{{client[3] + ' - ' + client[2]}}</option>
                             {% endfor %}
                             </select>
                         </div>

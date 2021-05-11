@@ -1,0 +1,32 @@
+<form onsubmit="onValidate(event)" id="notes_form">
+    <div class="row">
+        <div class="col-12 text-center">
+            <h1 style="color: dodgerblue">Add Note</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="form-group">
+                <label for="search">Student</label>
+                <select class="form-control" id="search-type" name="student_id" required>
+                <option value="" selected dis abled >-- Choose One --</option>
+                {% for  student in students %}
+                <option value="{{student[0]}}">{{student[2] + ' ' + student[3]}}</option>
+                {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="form-group">
+                <label for="strain">Note</label>
+                <input type="text" class="form-control" name="note" id="note">
+            </div>
+        </div>
+    </div>
+    <div class="row my-2">
+        <div class="col-12 text-center">
+            <button class="btn btn-info" type="submit" style="width: 100px">Save</button>
+            <button class="btn btn-danger" type="button" style="width: 100px" onclick="onClear('activity_form')">Clear</button>
+        </div>
+    </div>
+</form>

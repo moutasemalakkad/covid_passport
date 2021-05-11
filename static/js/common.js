@@ -101,8 +101,8 @@ function onValidate(e) {
     let id = $(form).attr('id');
     let formData = $(form).serializeArray();
     let tablename = "";
-    if (id === 'activity_form') {
-        tablename = "activity";
+    if (id === 'notes_form') {
+        tablename = "notes";
     } else if (id === 'client_form') {
         tablename = "client";
     } else if (id === 'insurance_form') {
