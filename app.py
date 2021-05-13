@@ -64,18 +64,20 @@ def getColumns(tablename):
     cursor.execute(sql)
 
     cols = cursor.fetchall()
-    cols = sorted(cols, key=getKey)
-    print("sorted cols: ")
+    print("fetched cols: ")
     print(cols)
     ret = []
+    gotten = []
 
     for col in cols:
         dic = {}
-        dic["name"] = col[3]
-        dic["type"] = col[7]
-        dic["max"] = col[8]
-        if dic["name"] != "sid" and dic["name"] != "cell":
-            ret.append(dic)
+        if col[3] not in gotten:
+            dic["name"] = col[3]
+            dic["type"] = col[7]
+            dic["max"] = col[8]
+            if dic["name"] != "sid" and dic["name"] != "cell":
+                ret.append(dic)
+                gotten.append(col[3])
 
     cursor.close()
     return ret
@@ -128,6 +130,8 @@ def createTableIfNotExists():
 def getFields():
     if request.method == 'GET':
         # If not already in dict, fetch and add to dict
+        print("SEARCH TYPE: ")
+        print(request.args["search-type"])
         if (request.args["search-type"] not in columnDict.keys()):
             cols = getColumns(request.args["search-type"])
             columnDict[request.args["search-type"]] = cols
@@ -138,6 +142,10 @@ def getFields():
 
 @app.route('/')
 def homepage():
+    global columnDict
+    columnDict = dict()
+    print("col dict init: ")
+    print(columnDict)
     createTableIfNotExists()
     return render_template("main.html", page="home")
 
@@ -216,4 +224,7 @@ def search(tablename):
 
 if __name__ == '__main__':
     tablesCreated = False
+    columnDict = dict()
+    print("col dict:")
+    print(columnDict)
     app.run()

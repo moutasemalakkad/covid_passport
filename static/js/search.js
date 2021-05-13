@@ -102,6 +102,7 @@ function makeDataTable(data, cols) {
 
 $(document).ready(function () {
     $("#search-type").on('change', function(){
+        print("change detectd")
         const selectedType = $("#search-type :selected").val();
         $.ajax({
             url: 'http://localhost:5000/getFields',
@@ -109,7 +110,7 @@ $(document).ready(function () {
             type: 'GET',
             success: function(response){
                 addQueryFields(response)
-
+                return
             },
             error: function(error){
                 console.log(error);
